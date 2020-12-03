@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Application'),
+        title: Text('Chat Application Nadeem'),
       ),
       body: Center(
         child: Text('First Screen'),
