@@ -1,3 +1,4 @@
+import 'package:ChatApplication/model/user.dart';
 import 'package:flutter/material.dart';
 import '../../network/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,7 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatScreen extends StatefulWidget {
   final String name;
   final String chatRoomId;
-  ChatScreen(this.name, this.chatRoomId);
+  final UserModel user;
+  ChatScreen({this.name, this.chatRoomId, this.user});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -13,11 +15,11 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   //to be replaced by logged in user either shared prefs or constructor....
-  String currUser = "Tejas Patil";
-  String currPhone = "6199999999";
   ChatServices chatServices = ChatServices();
 
   Widget chatMessages() {
+    String currUser = widget.user.firstName+widget.user.lastName;
+
     return StreamBuilder<QuerySnapshot>(
       stream: chatServices.getChats(widget.chatRoomId),
       builder: (context, snapshot) {
@@ -37,6 +39,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String currUser = widget.user.firstName+widget.user.lastName;
+
     TextEditingController messageEditingController =
         new TextEditingController();
 

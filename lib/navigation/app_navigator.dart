@@ -1,9 +1,13 @@
+import 'package:ChatApplication/model/user.dart';
 import 'package:flutter/material.dart';
 import '../screens/chat/user_list.dart';
 import '../screens/chat/user_chats.dart';
 import '../main.dart';
 
 class AppNavigator extends StatelessWidget {
+  final UserModel user;
+  AppNavigator({this.user});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -34,8 +38,8 @@ class AppNavigator extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            UserChats(),
-            UserList(),
+            UserChats(user:user),
+            UserList(user: user),
           ],
         ),
       ),

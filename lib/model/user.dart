@@ -2,7 +2,7 @@ class UserModel {
   String uid;
   String firstName;
   String lastName;
-  String phoneNumber;
+  int phoneNumber;
   String email;
   String password;
 

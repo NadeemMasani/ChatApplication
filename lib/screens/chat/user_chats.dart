@@ -1,3 +1,4 @@
+import 'package:ChatApplication/model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../chat/chat_screen.dart';
@@ -5,14 +6,18 @@ import '../../network/chat_service.dart';
 
 class UserChats extends StatelessWidget {
   //to be replaced  by current logged in user (constructor or shared prefs)
-  final currUser = "Tejas Patil";
-  final currPhone = 6199999999;
+  final UserModel user;
+  UserChats({this.user});
 
   //to make network call to firebase
   final ChatServices chatServices = ChatServices();
 
   @override
   Widget build(BuildContext context) {
+
+    final currUser =user.firstName+user.lastName ;
+    final currPhone = user.phoneNumber;
+
     String getChatRoomId(int curNo, int msgNo) {
       if (curNo > msgNo) {
         return curNo.toString() + "_" + msgNo.toString();
@@ -26,7 +31,7 @@ class UserChats extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(userName, chatRoomId);
+          return ChatScreen(name:userName, chatRoomId:chatRoomId, user: user);
         }),
       );
     }
