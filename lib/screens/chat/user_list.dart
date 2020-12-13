@@ -6,7 +6,6 @@ import './chat_screen.dart';
 import '../../network/chat_service.dart';
 
 class UserList extends StatefulWidget {
-
   final UserModel user;
   UserList({this.user});
 
@@ -15,39 +14,47 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-
   TextEditingController searchTextController = new TextEditingController();
-  String searchText ="";
+  String searchText = "";
   @override
   Widget build(BuildContext context) {
     ChatServices chatServices = new ChatServices();
     //get data of current user from either constructor or shared prefs
     final currUserPhone = widget.user.phoneNumber;
-    final currName = widget.user.firstName+widget.user.lastName;
+    final currName = widget.user.firstName + widget.user.lastName;
+    final currUserEmail = widget.user.email;
 
-    String getChatRoomId(int curNo, int msgNo) {
-      if (curNo > msgNo) {
-        return curNo.toString() + "_" + msgNo.toString();
+    String getChatRoomId(
+      String currUserEmail,
+      String email,
+    ) {
+      if (currUserEmail.compareTo(email) == 1) {
+        return currUserEmail + "_" + email;
       } else {
-        return msgNo.toString() + "_" + curNo.toString();
+        return email + "_" + currUserEmail;
       }
     }
 
-    sendMessage(String userName, int phoneNo) {
+    sendMessage(String userName, int phoneNo, String email) {
       //create chat room id
       List<String> users = [currName, userName];
       List<int> phoneNos = [currUserPhone, phoneNo];
-      String chatRoomId = getChatRoomId(currUserPhone, phoneNo);
+      List<String> emails = [currUserEmail, email];
+      // String chatRoomId = getChatRoomId(currUserPhone, phoneNo);
+      String chatRoomId = getChatRoomId(currUserEmail, email);
+
       Map<String, dynamic> chatRoom = {
         "users": users,
         "chatRoomId": chatRoomId,
         "phoneNos": phoneNos,
+        "emails": emails
       };
       chatServices.addChatRoom(chatRoom, chatRoomId);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(name:userName, chatRoomId:chatRoomId, user: widget.user);
+          return ChatScreen(
+              name: userName, chatRoomId: chatRoomId, user: widget.user);
         }),
       );
     }
@@ -59,30 +66,31 @@ class _UserListState extends State<UserList> {
           Row(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width-80,
+                width: MediaQuery.of(context).size.width - 80,
                 child: TextFormField(
                   controller: searchTextController,
                   decoration: formInputDecoration.copyWith(hintText: "Search"),
                 ),
               ),
-               SizedBox(width: 15),
-               Container(
-                 width: 40,
-                 child: IconButton(
-                   icon: Icon(Icons.search),
-                   onPressed: () {
-                       setState(() {
-                           searchText = searchTextController.text;
-                       });
-                   },
-                 ),
-               ),
+              SizedBox(width: 15),
+              Container(
+                width: 40,
+                child: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    setState(() {
+                      searchText = searchTextController.text;
+                    });
+                  },
+                ),
+              ),
             ],
           ),
-           StreamBuilder<QuerySnapshot>(
+          StreamBuilder<QuerySnapshot>(
             // stream: chatServices.getUsers() ,
-            stream: chatServices.getUserByName(searchText) ,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            stream: chatServices.getUserByName(searchText),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Text('Something went wrong');
               }
@@ -98,12 +106,14 @@ class _UserListState extends State<UserList> {
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
                     return ListTile(
                       title: Text(document.data()['name']),
-                      subtitle: Text(document.data()['phone'].toString()),
-                      trailing: document.data()['phone'] != currUserPhone
+                      subtitle: Text(document.data()['email']),
+                      trailing: document.data()['email'] != currUserEmail
                           ? GestureDetector(
                               onTap: () {
                                 sendMessage(
-                                    document.data()['name'], document.data()['phone']);
+                                    document.data()['name'],
+                                    document.data()['phone'],
+                                    document.data()['email']);
                               },
                               child: Icon(Icons.message),
                             )
