@@ -14,31 +14,31 @@ class UserChats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final currUser =user.firstName+user.lastName ;
+    final currUser = user.firstName + user.lastName;
     final currPhone = user.phoneNumber;
+    final currEmail = user.email;
 
-    String getChatRoomId(int curNo, int msgNo) {
-      if (curNo > msgNo) {
-        return curNo.toString() + "_" + msgNo.toString();
+    String getChatRoomId(String currEmail, String email) {
+      if (currEmail.compareTo(email) == 1) {
+        return currEmail + "_" + email;
       } else {
-        return msgNo.toString() + "_" + curNo.toString();
+        return email + "_" + currEmail;
       }
     }
 
-    goToChatScreen(String userName, int phoneNo) {
-      String chatRoomId = getChatRoomId(currPhone, phoneNo);
+    goToChatScreen(String userName, int phoneNo, String email) {
+      String chatRoomId = getChatRoomId(currEmail, email);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(name:userName, chatRoomId:chatRoomId, user: user);
+          return ChatScreen(name: userName, chatRoomId: chatRoomId, user: user);
         }),
       );
     }
 
     return Container(
       child: StreamBuilder<QuerySnapshot>(
-        stream: chatServices.getChatRooms(currPhone),
+        stream: chatServices.getChatRooms(currEmail),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
@@ -57,19 +57,24 @@ class UserChats extends StatelessWidget {
                   .data()['chatRoomId']
                   .replaceAll("_", "")
                   .replaceAll(currPhone.toString(), "");
+              final toEmail = document
+                  .data()['chatRoomId']
+                  .replaceAll("_", "")
+                  .replaceAll(currEmail, "");
               print(toUser);
               print(toPhone);
+              print(toEmail);
               return Container(
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.black26))),
                 margin: EdgeInsets.symmetric(vertical: 10),
                 child: GestureDetector(
                   onTap: () {
-                    goToChatScreen(toUser, int.parse(toPhone));
+                    goToChatScreen(toUser, int.parse(toPhone), toEmail);
                   },
                   child: ListTile(
                       title: Text(toUser),
-                      subtitle: Text(toPhone),
+                      subtitle: Text(toEmail),
                       trailing: Icon(Icons.message)),
                 ),
               );
