@@ -13,7 +13,6 @@ class AuthMethods{
 
   Future signInWithEmailAndPassword(String email, String password) async{
     try{
-
       final UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       print(result);
       final User firebaseUser = result.user;
@@ -23,7 +22,7 @@ class AuthMethods{
     }
   }
 
-  Future signUpWithEmailAndPassword(String email, String password) async{
+  Future<UserModel> signUpWithEmailAndPassword(String email, String password) async{
     try{
       print("enter");
       print(_auth);

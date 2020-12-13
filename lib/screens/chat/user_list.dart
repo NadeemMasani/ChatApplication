@@ -1,20 +1,29 @@
+import 'package:ChatApplication/model/user.dart';
+import 'package:ChatApplication/screens/shared/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import './chat_screen.dart';
 import '../../network/chat_service.dart';
 
 class UserList extends StatefulWidget {
+
+  final UserModel user;
+  UserList({this.user});
+
   @override
   _UserListState createState() => _UserListState();
 }
 
 class _UserListState extends State<UserList> {
+
+  TextEditingController searchTextController = new TextEditingController();
+  String searchText ="";
   @override
   Widget build(BuildContext context) {
     ChatServices chatServices = new ChatServices();
     //get data of current user from either constructor or shared prefs
-    final currUserPhone = 6199999999;
-    final currName = "Tejas Patil";
+    final currUserPhone = widget.user.phoneNumber;
+    final currName = widget.user.firstName+widget.user.lastName;
 
     String getChatRoomId(int curNo, int msgNo) {
       if (curNo > msgNo) {
@@ -38,40 +47,75 @@ class _UserListState extends State<UserList> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(userName, chatRoomId);
+          return ChatScreen(name:userName, chatRoomId:chatRoomId, user: widget.user);
         }),
       );
     }
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: chatServices.getUsers(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong');
-        }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width-80,
+                child: TextFormField(
+                  controller: searchTextController,
+                  decoration: formInputDecoration.copyWith(hintText: "Search"),
+                ),
+              ),
+               SizedBox(width: 15),
+               Container(
+                 width: 40,
+                 child: IconButton(
+                   icon: Icon(Icons.search),
+                   onPressed: () {
+                       setState(() {
+                           searchText = searchTextController.text;
+                       });
+                   },
+                 ),
+               ),
+            ],
+          ),
+           StreamBuilder<QuerySnapshot>(
+            // stream: chatServices.getUsers() ,
+            stream: chatServices.getUserByName(searchText) ,
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Something went wrong');
+              }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-        return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
-            return ListTile(
-              title: Text(document.data()['name']),
-              subtitle: Text(document.data()['phone'].toString()),
-              trailing: document.data()['phone'] != currUserPhone
-                  ? GestureDetector(
-                      onTap: () {
-                        sendMessage(
-                            document.data()['name'], document.data()['phone']);
-                      },
-                      child: Icon(Icons.message),
-                    )
-                  : Text("me"),
-            );
-          }).toList(),
-        );
-      },
+              return Expanded(
+                child: new ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  children: snapshot.data.docs.map((DocumentSnapshot document) {
+                    return ListTile(
+                      title: Text(document.data()['name']),
+                      subtitle: Text(document.data()['phone'].toString()),
+                      trailing: document.data()['phone'] != currUserPhone
+                          ? GestureDetector(
+                              onTap: () {
+                                sendMessage(
+                                    document.data()['name'], document.data()['phone']);
+                              },
+                              child: Icon(Icons.message),
+                            )
+                          : Text("me"),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

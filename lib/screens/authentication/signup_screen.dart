@@ -1,3 +1,7 @@
+import 'package:ChatApplication/model/user.dart';
+import 'package:ChatApplication/navigation/app_navigator.dart';
+import 'package:ChatApplication/network/chat_service.dart';
+import 'package:ChatApplication/screens/chat/chat_screen.dart';
 import 'package:ChatApplication/screens/shared/input_decoration.dart';
 import 'package:ChatApplication/services/authentication.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +21,39 @@ class _SignUpState extends State<SignUp> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController phoneNumberController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  UserModel currentUser;
+  final ChatServices chatServices = ChatServices();
 
-  signUpWithEmailAndPassword(){
+  signUpWithEmailAndPassword() async{
       if(formKey.currentState.validate()){
           setState(() {
             isLoading = true;
           });
-          authMethods.signUpWithEmailAndPassword(emailController.text, passwordController.text)
-              .then((value) => print(value));
+          UserModel user = await authMethods.signUpWithEmailAndPassword(emailController.text, passwordController.text);
+
+          user.firstName = firstNameController.text;
+          user.lastName = lastNameController.text;
+          user.email = emailController.text;
+          user.phoneNumber = int.parse(phoneNumberController.text);
+          user.password = passwordController.text;
+
+          setState(() {
+            currentUser=user;
+          });
+
+          Map<String,dynamic> userDataMap = {
+            "name" : firstNameController.text+lastNameController.text,
+            "email" : emailController.text,
+            "phone": int.parse(phoneNumberController.text),
+          };
+
+          chatServices.addUserInfo(userDataMap);
+          print("Checking Email");
+          chatServices.getUserByEmail("tex@gmail.com");
+
+          Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => AppNavigator( user: currentUser)
+          ));
       }
   }
 
