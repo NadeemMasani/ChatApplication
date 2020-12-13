@@ -18,7 +18,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatServices chatServices = ChatServices();
 
   Widget chatMessages() {
-    String currUser = widget.user.firstName+widget.user.lastName;
+    String currUser = widget.user.firstName + widget.user.lastName;
 
     return StreamBuilder<QuerySnapshot>(
       stream: chatServices.getChats(widget.chatRoomId),
@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String currUser = widget.user.firstName+widget.user.lastName;
+    String currUser = widget.user.firstName + widget.user.lastName;
 
     TextEditingController messageEditingController =
         new TextEditingController();
