@@ -26,7 +26,7 @@ class UserChats extends StatelessWidget {
       }
     }
 
-    goToChatScreen(String userName, int phoneNo, String email) {
+    goToChatScreen(String userName, String email) {
       String chatRoomId = getChatRoomId(currEmail, email);
       Navigator.push(
         context,
@@ -53,16 +53,16 @@ class UserChats extends StatelessWidget {
               final toUser = document.data()['users'][0] == currUser
                   ? document.data()['users'][1]
                   : document.data()['users'][0];
-              final toPhone = document
-                  .data()['chatRoomId']
-                  .replaceAll("_", "")
-                  .replaceAll(currPhone.toString(), "");
+              // final toPhone = document
+              //     .data()['chatRoomId']
+              //     .replaceAll("_", "")
+              //     .replaceAll(currPhone.toString(), "");
               final toEmail = document
                   .data()['chatRoomId']
                   .replaceAll("_", "")
                   .replaceAll(currEmail, "");
               print(toUser);
-              print(toPhone);
+              // print(toPhone);
               print(toEmail);
               return Container(
                 decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class UserChats extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 10),
                 child: GestureDetector(
                   onTap: () {
-                    goToChatScreen(toUser, int.parse(toPhone), toEmail);
+                    goToChatScreen(toUser, toEmail);
                   },
                   child: ListTile(
                       title: Text(toUser),
