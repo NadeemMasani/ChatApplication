@@ -5,7 +5,6 @@ import '../chat/chat_screen.dart';
 import '../../network/chat_service.dart';
 
 class UserChats extends StatelessWidget {
-  //to be replaced  by current logged in user (constructor or shared prefs)
   final UserModel user;
   UserChats({this.user});
 
@@ -15,7 +14,6 @@ class UserChats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currUser = user.firstName + user.lastName;
-    final currPhone = user.phoneNumber;
     final currEmail = user.email;
 
     String getChatRoomId(String currEmail, String email) {
@@ -53,16 +51,11 @@ class UserChats extends StatelessWidget {
               final toUser = document.data()['users'][0] == currUser
                   ? document.data()['users'][1]
                   : document.data()['users'][0];
-              // final toPhone = document
-              //     .data()['chatRoomId']
-              //     .replaceAll("_", "")
-              //     .replaceAll(currPhone.toString(), "");
               final toEmail = document
                   .data()['chatRoomId']
                   .replaceAll("_", "")
                   .replaceAll(currEmail, "");
               print(toUser);
-              // print(toPhone);
               print(toEmail);
               return Container(
                 decoration: BoxDecoration(

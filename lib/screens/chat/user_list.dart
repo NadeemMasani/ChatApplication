@@ -88,7 +88,7 @@ class _UserListState extends State<UserList> {
           ),
           StreamBuilder<QuerySnapshot>(
             // stream: chatServices.getUsers() ,
-            stream: chatServices.getUserByName(searchText),
+            stream: chatServices.getUserByName(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
@@ -100,26 +100,57 @@ class _UserListState extends State<UserList> {
               }
 
               return Expanded(
-                child: new ListView(
+                child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  children: snapshot.data.docs.map((DocumentSnapshot document) {
-                    return ListTile(
-                      title: Text(document.data()['name']),
-                      subtitle: Text(document.data()['email']),
-                      trailing: document.data()['email'] != currUserEmail
-                          ? GestureDetector(
-                              onTap: () {
-                                sendMessage(
-                                    document.data()['name'],
-                                    document.data()['phone'],
-                                    document.data()['email']);
-                              },
-                              child: Icon(Icons.message),
-                            )
-                          : Text("me"),
-                    );
-                  }).toList(),
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final name =
+                        snapshot.data.docs[index]['name'].toLowerCase();
+                    final email =
+                        snapshot.data.docs[index]['email'].toLowerCase();
+
+                    if (searchText == "") {
+                      return GestureDetector(
+                        onTap: () {
+                          sendMessage(
+                              snapshot.data.docs[index]['name'],
+                              snapshot.data.docs[index]['phone'],
+                              snapshot.data.docs[index]['email']);
+                        },
+                        child: ListTile(
+                          title: Text(snapshot.data.docs[index]['name']),
+                          subtitle: Text(snapshot.data.docs[index]['email']),
+                          trailing: snapshot.data.docs[index]['email'] !=
+                                  currUserEmail
+                              ? Icon(Icons.message)
+                              : Text("me"),
+                        ),
+                      );
+                    } else {
+                      if (name.contains(searchText.toLowerCase()) ||
+                          email.contains(searchText.toLowerCase())) {
+                        print(snapshot.data.docs[index]['name']);
+                        return GestureDetector(
+                          onTap: () {
+                            sendMessage(
+                                snapshot.data.docs[index]['name'],
+                                snapshot.data.docs[index]['phone'],
+                                snapshot.data.docs[index]['email']);
+                          },
+                          child: ListTile(
+                            title: Text(snapshot.data.docs[index]['name']),
+                            subtitle: Text(snapshot.data.docs[index]['email']),
+                            trailing: snapshot.data.docs[index]['email'] !=
+                                    currUserEmail
+                                ? Icon(Icons.message)
+                                : Text("me"),
+                          ),
+                        );
+                      } else
+                        return Container();
+                    }
+                  },
                 ),
               );
             },

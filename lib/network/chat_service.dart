@@ -28,24 +28,15 @@ class ChatServices {
         .collection("chatRoom")
         .doc(chatRoomId)
         .collection("chats")
-        .orderBy('time')
-        .snapshots();
+        .orderBy("time", descending: true);
   }
 
   getUsers() {
     return FirebaseFirestore.instance.collection('users').snapshots();
   }
 
-  getUserByName(String userName) {
-    if (userName != null && userName.isNotEmpty) {
-      return FirebaseFirestore.instance
-          .collection('users')
-          .where("name", isEqualTo: userName)
-          .snapshots();
-    } else {
-      print("Null Searhc text entered");
-      return FirebaseFirestore.instance.collection('users').snapshots();
-    }
+  getUserByName() {
+    return FirebaseFirestore.instance.collection('users').snapshots();
   }
 
   Future<UserModel> getUserByEmail(String email) async {
