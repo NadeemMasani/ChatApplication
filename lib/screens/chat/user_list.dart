@@ -100,24 +100,22 @@ class _UserListState extends State<UserList> {
               }
 
               return Expanded(
-                child: new ListView(
+                child: ListView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
-                    return ListTile(
-                      title: Text(document.data()['name']),
-                      subtitle: Text(document.data()['email']),
-                      trailing: document.data()['email'] != currUserEmail
-                          ? GestureDetector(
-                              onTap: () {
-                                sendMessage(
-                                    document.data()['name'],
-                                    document.data()['phone'],
-                                    document.data()['email']);
-                              },
-                              child: Icon(Icons.message),
-                            )
-                          : Text("me"),
+                    return GestureDetector(
+                      onTap: () {
+                        sendMessage(document.data()['name'],
+                            document.data()['phone'], document.data()['email']);
+                      },
+                      child: ListTile(
+                        title: Text(document.data()['name']),
+                        subtitle: Text(document.data()['email']),
+                        trailing: document.data()['email'] != currUserEmail
+                            ? Icon(Icons.message)
+                            : Text("me"),
+                      ),
                     );
                   }).toList(),
                 ),

@@ -28,8 +28,7 @@ class ChatServices {
         .collection("chatRoom")
         .doc(chatRoomId)
         .collection("chats")
-        .orderBy('time')
-        .snapshots();
+        .orderBy("time", descending: true);
   }
 
   getUsers() {

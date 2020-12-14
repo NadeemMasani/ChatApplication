@@ -2,6 +2,8 @@ import 'package:ChatApplication/model/user.dart';
 import 'package:flutter/material.dart';
 import '../../network/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firestore_ui/firestore_ui.dart';
+import '../../widgets/message_list.dart';
 
 class ChatScreen extends StatefulWidget {
   final String name;
@@ -17,32 +19,25 @@ class _ChatScreenState extends State<ChatScreen> {
   //to be replaced by logged in user either shared prefs or constructor....
   ChatServices chatServices = ChatServices();
 
-  Widget chatMessages() {
-    String currUser = widget.user.firstName + widget.user.lastName;
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: chatServices.getChats(widget.chatRoomId),
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? ListView.builder(
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (context, index) {
-                  return MessageTile(
-                    message: snapshot.data.docs[index]["message"],
-                    sendByMe: currUser == snapshot.data.docs[index]["sendBy"],
-                  );
-                })
-            : Container();
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     String currUser = widget.user.firstName + widget.user.lastName;
-
     TextEditingController messageEditingController =
         new TextEditingController();
+
+    Widget chatMessages(UserModel user) {
+      return Expanded(
+        child: FirestoreAnimatedList(
+          query: chatServices.getChats(widget.chatRoomId),
+          reverse: true,
+          itemBuilder: (BuildContext context, DocumentSnapshot snapshot,
+              Animation<double> animation, int index) {
+            return MessageList(
+                messageSnapshot: snapshot, animation: animation, user: user);
+          },
+        ),
+      );
+    }
 
     addMessage() {
       if (messageEditingController.text.isNotEmpty) {
@@ -54,6 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
         chatServices.addMessage(widget.chatRoomId, chatMessageMap);
         setState(() {
           messageEditingController.text = "";
+          FocusScope.of(context).unfocus();
         });
       }
     }
@@ -63,9 +59,9 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Text(widget.name),
       ),
       body: Container(
-        child: Stack(
+        child: Column(
           children: [
-            chatMessages(),
+            chatMessages(widget.user),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
@@ -98,49 +94,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MessageTile extends StatelessWidget {
-  final String message;
-  final bool sendByMe;
-
-  MessageTile({@required this.message, @required this.sendByMe});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
-      alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin:
-            sendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
-        padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-        decoration: BoxDecoration(
-            borderRadius: sendByMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomLeft: Radius.circular(23))
-                : BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomRight: Radius.circular(23)),
-            gradient: LinearGradient(
-              colors: sendByMe
-                  ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
-                  : [Colors.black38, Colors.black12],
-            )),
-        child: Text(message,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: 'OverpassRegular',
-                fontWeight: FontWeight.w300)),
       ),
     );
   }
