@@ -2,22 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/user.dart';
+import '../network/chat_service.dart';
 
-class MessageList extends StatelessWidget {
+class MessageList extends StatefulWidget {
   final DocumentSnapshot messageSnapshot;
   final Animation animation;
   final UserModel user;
+  final String chatRoomId;
+  MessageList(
+      {this.messageSnapshot, this.animation, this.user, this.chatRoomId});
 
-  MessageList({this.messageSnapshot, this.animation, this.user});
+  @override
+  _MessageListState createState() => _MessageListState();
+}
+
+class _MessageListState extends State<MessageList> {
+  ChatServices chatServices = ChatServices();
+
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // print(widget.messageSnapshot.data()['message']);
+    // print(widget.user.firstName);
+    // print(widget.user.lastName);
+    // print(widget.messageSnapshot.data());
+    // print(widget.chatRoomId);
+    if (widget.user.firstName + widget.user.lastName !=
+        widget.messageSnapshot.data()['sendBy']) {
+      chatServices.updateReadyBy(widget.messageSnapshot.id, widget.chatRoomId);
+    }
     return SizeTransition(
-      sizeFactor: CurvedAnimation(parent: animation, curve: Curves.decelerate),
+      sizeFactor:
+          CurvedAnimation(parent: widget.animation, curve: Curves.decelerate),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
         child: Row(
-            children: user.firstName + user.lastName ==
-                    messageSnapshot.data()['sendBy']
+            children: widget.user.firstName + widget.user.lastName ==
+                    widget.messageSnapshot.data()['sendBy']
                 ? messagesSent()
                 : messagesRecieved()),
       ),
@@ -42,13 +66,24 @@ class MessageList extends StatelessWidget {
               gradient: LinearGradient(
                   colors: [const Color(0xff007EF4), const Color(0xff2A75BC)]),
             ),
-            child: Text(messageSnapshot.data()['message'],
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'OverpassRegular',
-                    fontWeight: FontWeight.w300)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.messageSnapshot.data()['message'],
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'OverpassRegular',
+                      fontWeight: FontWeight.w300),
+                ),
+                Icon(widget.messageSnapshot.data()['readBy']
+                    ? Icons.check_circle
+                    : Icons.check_circle_outline_rounded)
+              ],
+            ),
           ),
         ),
       )
@@ -73,7 +108,7 @@ class MessageList extends StatelessWidget {
               gradient:
                   LinearGradient(colors: [Colors.black38, Colors.black12]),
             ),
-            child: Text(messageSnapshot.data()['message'],
+            child: Text(widget.messageSnapshot.data()['message'],
                 textAlign: TextAlign.start,
                 style: TextStyle(
                     color: Colors.black,

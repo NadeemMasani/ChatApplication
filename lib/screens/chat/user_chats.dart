@@ -55,8 +55,6 @@ class UserChats extends StatelessWidget {
                   .data()['chatRoomId']
                   .replaceAll("_", "")
                   .replaceAll(currEmail, "");
-              print(toUser);
-              print(toEmail);
               return Container(
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.black26))),

@@ -83,4 +83,15 @@ class ChatServices {
   }
 
 
+  updateReadyBy(String id, String chatRoomId) {
+    FirebaseFirestore.instance
+        .collection("chatRoom")
+        .doc(chatRoomId)
+        .collection("chats")
+        .doc(id)
+        .update({
+      "readBy": true,
+    });
+  }
+
 }
