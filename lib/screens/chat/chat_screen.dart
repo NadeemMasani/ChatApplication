@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
     TextEditingController messageEditingController =
         new TextEditingController();
 
-    Widget chatMessages(UserModel user) {
+    Widget chatMessages(UserModel user, String chatRoomId) {
       return Expanded(
         child: FirestoreAnimatedList(
           query: chatServices.getChats(widget.chatRoomId),
@@ -33,7 +33,10 @@ class _ChatScreenState extends State<ChatScreen> {
           itemBuilder: (BuildContext context, DocumentSnapshot snapshot,
               Animation<double> animation, int index) {
             return MessageList(
-                messageSnapshot: snapshot, animation: animation, user: user);
+                messageSnapshot: snapshot,
+                animation: animation,
+                user: user,
+                chatRoomId: chatRoomId);
           },
         ),
       );
@@ -45,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
           "sendBy": currUser,
           "message": messageEditingController.text,
           'time': DateTime.now().millisecondsSinceEpoch,
+          "readBy": false,
         };
         chatServices.addMessage(widget.chatRoomId, chatMessageMap);
         setState(() {
@@ -61,7 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         child: Column(
           children: [
-            chatMessages(widget.user),
+            chatMessages(widget.user, widget.chatRoomId),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,

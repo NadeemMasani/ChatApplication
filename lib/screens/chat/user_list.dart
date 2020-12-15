@@ -40,6 +40,10 @@ class _UserListState extends State<UserList> {
       List<String> users = [currName, userName];
       List<int> phoneNos = [currUserPhone, phoneNo];
       List<String> emails = [currUserEmail, email];
+      List<Map<String, String>> unreadMsgs = [
+        {currUserEmail: "0"},
+        {email: "0"}
+      ];
       // String chatRoomId = getChatRoomId(currUserPhone, phoneNo);
       String chatRoomId = getChatRoomId(currUserEmail, email);
 
@@ -47,7 +51,8 @@ class _UserListState extends State<UserList> {
         "users": users,
         "chatRoomId": chatRoomId,
         "phoneNos": phoneNos,
-        "emails": emails
+        "emails": emails,
+        "unreadMsgs": unreadMsgs,
       };
       chatServices.addChatRoom(chatRoom, chatRoomId);
       Navigator.push(
