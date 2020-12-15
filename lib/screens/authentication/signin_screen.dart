@@ -1,7 +1,11 @@
 import 'package:ChatApplication/model/user.dart';
 import 'package:ChatApplication/navigation/app_navigator.dart';
 import 'package:ChatApplication/network/chat_service.dart';
+import 'package:ChatApplication/screens/authentication/forgot_password.dart';
+import 'package:ChatApplication/screens/authentication/signup_screen.dart';
+import 'package:ChatApplication/screens/shared/alerts.dart';
 import 'package:ChatApplication/screens/shared/input_decoration.dart';
+import 'package:ChatApplication/screens/shared/utils.dart';
 import 'package:ChatApplication/services/authentication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +14,7 @@ class SignIn extends StatefulWidget {
 
   @override
   _SignInState createState() => _SignInState();
+
 }
 
 class _SignInState extends State<SignIn> {
@@ -20,6 +25,21 @@ class _SignInState extends State<SignIn> {
   TextEditingController passwordController = new TextEditingController();
   AuthMethods auth = new AuthMethods();
   ChatServices chatServices = new ChatServices();
+
+  @override
+  Future<void> initState() {
+    super.initState();
+    Utils.retrieveUserInfo().then((user) {
+      print("User Details");
+      print(user.email);
+      print(user.password);
+        emailController.text = user.email != null ? user.email : "";
+        passwordController.text = user.password != null ? user.password :"";
+    }
+    );
+
+
+  }
 
   signIn()async {
     if(formKey.currentState.validate()){
@@ -37,9 +57,17 @@ class _SignInState extends State<SignIn> {
 
       if(isAuthenticated){
         user= await chatServices.getUserByEmail(emailController.text);
+        user.password = passwordController.text;
+        Utils.saveUserData(user);
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => AppNavigator( user: user)
         ));
+      }else{
+        setState(() {
+          isLoading = false;
+        });
+        showAlertDialog(
+            context, 'Invalid id or password', 'Alert');
       }
     }
   }
@@ -84,11 +112,18 @@ class _SignInState extends State<SignIn> {
                       SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        alignment: Alignment.centerRight,
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => ForgotPassword()
+                          ));
+                        },
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Forgot Password', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),),
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text('Forgot Password', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -110,15 +145,13 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                       SizedBox(height: 10,),
-                      Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(20),
-                        decoration:boxDecoration,
-                        child: Text('Sign In with Google', style: TextStyle(color: Colors.white, fontSize: 18),),
-                      ),
-                      SizedBox(height: 5,),
-                      Text('Register Now', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),)
+                      GestureDetector(
+                          onTap: (){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) => SignUp()
+                            ));
+                          },
+                          child: Text('Register Now', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),))
                     ],
                   ),
                 ),

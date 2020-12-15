@@ -1,7 +1,9 @@
 import 'package:ChatApplication/model/user.dart';
 import 'package:ChatApplication/navigation/app_navigator.dart';
 import 'package:ChatApplication/network/chat_service.dart';
+import 'package:ChatApplication/screens/authentication/signin_screen.dart';
 import 'package:ChatApplication/screens/chat/chat_screen.dart';
+import 'package:ChatApplication/screens/shared/alerts.dart';
 import 'package:ChatApplication/screens/shared/input_decoration.dart';
 import 'package:ChatApplication/services/authentication.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +25,30 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordController = new TextEditingController();
   UserModel currentUser;
   final ChatServices chatServices = ChatServices();
+  bool success=false;
+  String errorMessage;
 
   signUpWithEmailAndPassword() async{
       if(formKey.currentState.validate()){
           setState(() {
             isLoading = true;
           });
-          UserModel user = await authMethods.signUpWithEmailAndPassword(emailController.text, passwordController.text);
+          UserModel user;
+          try {
+             user = await authMethods.signUpWithEmailAndPassword(
+                emailController.text, passwordController.text);
+             setState(() {
+               success = true;
+             });
+          }catch(e){
+            setState(() {
+              success = false;
+              isLoading= false;
+              errorMessage = e.toString().substring(e.toString().indexOf(']')+1);
+            });
+          }
 
+          if(success){
           user.firstName = firstNameController.text;
           user.lastName = lastNameController.text;
           user.email = emailController.text;
@@ -54,6 +72,9 @@ class _SignUpState extends State<SignUp> {
           Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => AppNavigator( user: currentUser)
           ));
+          }else{
+              showAlertDialog(context, errorMessage, 'Alert');
+          }
       }
   }
 
@@ -141,15 +162,13 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               SizedBox(height: 10,),
-              Container(
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(20),
-                decoration:boxDecoration,
-                child: Text('Sign Up with Google', style: TextStyle(color: Colors.white, fontSize: 18),),
-              ),
-              SizedBox(height: 5,),
-              Text('Sign In', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),)
+              GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) => SignIn()
+                    ));
+                  },
+                  child: Text('Already have a account, Sign In', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),))
             ],
           ),
         ),
