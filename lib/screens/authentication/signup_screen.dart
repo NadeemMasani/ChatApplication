@@ -1,12 +1,17 @@
+
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:ChatApplication/model/user.dart';
 import 'package:ChatApplication/navigation/app_navigator.dart';
 import 'package:ChatApplication/network/chat_service.dart';
 import 'package:ChatApplication/screens/authentication/signin_screen.dart';
-import 'package:ChatApplication/screens/chat/chat_screen.dart';
 import 'package:ChatApplication/screens/shared/alerts.dart';
+import 'package:ChatApplication/screens/shared/image_display.dart';
 import 'package:ChatApplication/screens/shared/input_decoration.dart';
 import 'package:ChatApplication/services/authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -27,6 +32,9 @@ class _SignUpState extends State<SignUp> {
   final ChatServices chatServices = ChatServices();
   bool success=false;
   String errorMessage;
+  final picker = ImagePicker();
+  bool isImageSelected=false;
+  String base64Image;
 
   signUpWithEmailAndPassword() async{
       if(formKey.currentState.validate()){
@@ -54,6 +62,7 @@ class _SignUpState extends State<SignUp> {
           user.email = emailController.text;
           user.phoneNumber = int.parse(phoneNumberController.text);
           user.password = passwordController.text;
+          user.base64Image = base64Image;
 
           setState(() {
             currentUser=user;
@@ -63,6 +72,7 @@ class _SignUpState extends State<SignUp> {
             "name" : firstNameController.text+lastNameController.text,
             "email" : emailController.text,
             "phone": int.parse(phoneNumberController.text),
+            "image": base64Image
           };
 
           chatServices.addUserInfo(userDataMap);
@@ -97,6 +107,7 @@ class _SignUpState extends State<SignUp> {
                 key: formKey,
                 child: Column(
                   children: [
+                    if(base64Image !=null) ImageDisplay(base64: base64Image),
                     TextFormField(
                       decoration: formInputDecoration.copyWith(labelText: 'First Name'),
                       controller: firstNameController,
@@ -143,6 +154,24 @@ class _SignUpState extends State<SignUp> {
               ),
               SizedBox(
                 height: 10,
+              ),
+              ListTile(
+                title: Text('Upload a Photo'),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.image, color: Color.fromRGBO(72, 72, 74, 1),
+                  ),
+                  onPressed: ()async {
+                    PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      File image = File(pickedFile.path);
+                      setState(() {
+                        isImageSelected = true;
+                        base64Image = base64Encode(image.readAsBytesSync());
+                      });
+                    }
+                  },
+                ),
               ),
               GestureDetector(
                 onTap: (){
