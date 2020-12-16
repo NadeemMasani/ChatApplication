@@ -1,8 +1,9 @@
 import 'package:ChatApplication/model/user.dart';
-import 'package:ChatApplication/screens/chat/group_chat.dart';
+import 'package:ChatApplication/screens/chat/add_group_chat.dart';
 import 'package:flutter/material.dart';
 import '../screens/chat/user_list.dart';
 import '../screens/chat/user_chats.dart';
+import '../screens/chat/user_group_chats.dart';
 import '../main.dart';
 
 class AppNavigator extends StatelessWidget {
@@ -42,7 +43,7 @@ class AppNavigator extends StatelessWidget {
           children: [
             UserChats(user: user),
             UserList(user: user),
-            GroupChat(user: user),
+            UserGroupChats(user: user),
           ],
         ),
       ),

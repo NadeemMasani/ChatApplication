@@ -72,14 +72,16 @@ class _MessageListState extends State<MessageList> {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  widget.messageSnapshot.data()['message'],
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontFamily: 'OverpassRegular',
-                      fontWeight: FontWeight.w300),
+                Flexible(
+                  child: Text(
+                    widget.messageSnapshot.data()['message'],
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'OverpassRegular',
+                        fontWeight: FontWeight.w300),
+                  ),
                 ),
                 Icon(widget.messageSnapshot.data()['readBy']
                     ? Icons.check_circle
