@@ -66,8 +66,6 @@ class _SignUpState extends State<SignUp> {
           };
 
           chatServices.addUserInfo(userDataMap);
-          print("Checking Email");
-          chatServices.getUserByEmail("tex@gmail.com");
 
           Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => AppNavigator( user: currentUser)

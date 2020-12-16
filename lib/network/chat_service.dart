@@ -7,10 +7,8 @@ class ChatServices {
         .collection("users")
         .add(userData)
         .catchError((e) {
-      print("Error Caught while adding User Info");
       print(e.toString());
     });
-    print("Added UserInfo");
   }
 
   Future<void> addChatRoom(chatRoom, chatRoomId) async {
@@ -20,6 +18,15 @@ class ChatServices {
         .set(chatRoom)
         .catchError((e) {
       print(e);
+    });
+  }
+
+  Future<void> addGroupChat(chatRoom) async{
+    return FirebaseFirestore.instance
+        .collection("chatRoom")
+        .add(chatRoom)
+        .catchError((e) {
+      print(e.toString());
     });
   }
 
@@ -54,13 +61,6 @@ class ChatServices {
     user.phoneNumber = snapshot.docs.first.data()['phone'];
     user.email = snapshot.docs.first.data()['email'];
 
-    print(user.firstName +
-        " " +
-        user.lastName +
-        " " +
-        user.email +
-        " " +
-        user.phoneNumber.toString());
     return user;
   }
 
@@ -70,6 +70,7 @@ class ChatServices {
         .where('emails', arrayContains: email)
         .snapshots();
   }
+
 
   addMessage(String chatRoomId, chatMessageData) {
     FirebaseFirestore.instance

@@ -23,5 +23,5 @@ const boxDecoration = BoxDecoration(
 );
 
 final Shader linearGradient = LinearGradient(
-  colors: <Color>[Colors.orangeAccent, Colors.red],
+  colors: <Color>[Colors.lightBlueAccent, Colors.blue],
 ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));

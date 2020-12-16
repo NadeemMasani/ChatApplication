@@ -1,4 +1,5 @@
 import 'package:ChatApplication/model/user.dart';
+import 'package:ChatApplication/screens/chat/group_chat.dart';
 import 'package:flutter/material.dart';
 import '../screens/chat/user_list.dart';
 import '../screens/chat/user_chats.dart';
@@ -11,7 +12,7 @@ class AppNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Chap Application"),
@@ -33,13 +34,15 @@ class AppNavigator extends StatelessWidget {
             tabs: [
               Tab(icon: Icon(Icons.message)),
               Tab(icon: Icon(Icons.list)),
+              Tab(icon: Icon(Icons.group_add))
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            UserChats(user:user),
+            UserChats(user: user),
             UserList(user: user),
+            GroupChat(user: user),
           ],
         ),
       ),

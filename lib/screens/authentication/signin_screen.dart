@@ -30,9 +30,6 @@ class _SignInState extends State<SignIn> {
   Future<void> initState() {
     super.initState();
     Utils.retrieveUserInfo().then((user) {
-      print("User Details");
-      print(user.email);
-      print(user.password);
         emailController.text = user.email != null ? user.email : "";
         passwordController.text = user.password != null ? user.password :"";
     }
@@ -84,11 +81,26 @@ class _SignInState extends State<SignIn> {
         ) :SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height-50,
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: 50,),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat, color: Colors.blue.shade400, size: 45),
+                      Text('Chit-Chat',
+                          style: TextStyle(
+                              fontSize: 50,
+                              foreground: Paint()..shader = linearGradient,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 50,),
                 Form(
                   key: formKey,
                   child: Column(
