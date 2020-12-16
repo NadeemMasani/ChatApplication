@@ -53,6 +53,7 @@ class _UserListState extends State<UserList> {
         "phoneNos": phoneNos,
         "emails": emails,
         "unreadMsgs": unreadMsgs,
+        "isGroupChat": false,
       };
 
       chatServices.checkChatRoomExists(chatRoomId).then((value) {

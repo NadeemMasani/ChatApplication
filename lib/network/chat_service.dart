@@ -21,7 +21,7 @@ class ChatServices {
     });
   }
 
-  Future<void> addGroupChat(chatRoom) async{
+  Future<void> addGroupChat(chatRoom) async {
     return FirebaseFirestore.instance
         .collection("chatRoom")
         .add(chatRoom)
@@ -34,6 +34,14 @@ class ChatServices {
     return FirebaseFirestore.instance
         .collection("chatRoom")
         .doc(chatRoomId)
+        .collection("chats")
+        .orderBy("time", descending: true);
+  }
+
+  getGroupChatsMessage(String groupChatGroupChatId) {
+    return FirebaseFirestore.instance
+        .collection("chatRoom")
+        .doc(groupChatGroupChatId)
         .collection("chats")
         .orderBy("time", descending: true);
   }
@@ -67,10 +75,10 @@ class ChatServices {
   getChatRooms(String email) {
     return FirebaseFirestore.instance
         .collection('chatRoom')
+        .where('isGroupChat', isEqualTo: false)
         .where('emails', arrayContains: email)
         .snapshots();
   }
-
 
   addMessage(String chatRoomId, chatMessageData, String email) {
     FirebaseFirestore.instance
@@ -92,6 +100,14 @@ class ChatServices {
         .collection('chatRoom')
         .doc(chatRoomId)
         .update({unreadMsgskey: FieldValue.increment(1)});
+  }
+
+  addGroupChatMessage(String groupChatId, messageMap) {
+    FirebaseFirestore.instance
+        .collection("chatRoom")
+        .doc(groupChatId)
+        .collection("chats")
+        .add(messageMap);
   }
 
   updateReadyBy(String id, String chatRoomId, String email) {
@@ -129,5 +145,13 @@ class ChatServices {
     }
 
     return exists;
+  }
+
+  getGroupChats(String email) {
+    return FirebaseFirestore.instance
+        .collection("chatRoom")
+        .where('isGroupChat', isEqualTo: true)
+        .where('emails', arrayContains: email)
+        .snapshots();
   }
 }
