@@ -50,7 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
           'time': DateTime.now().millisecondsSinceEpoch,
           "readBy": false,
         };
-        chatServices.addMessage(widget.chatRoomId, chatMessageMap);
+        chatServices.addMessage(
+            widget.chatRoomId, chatMessageMap, widget.user.email);
         setState(() {
           messageEditingController.text = "";
           FocusScope.of(context).unfocus();

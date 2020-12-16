@@ -14,7 +14,7 @@ class ChatServices {
   }
 
   Future<void> addChatRoom(chatRoom, chatRoomId) async {
-    return FirebaseFirestore.instance
+    return await FirebaseFirestore.instance
         .collection("chatRoom")
         .doc(chatRoomId)
         .set(chatRoom)
@@ -71,7 +71,7 @@ class ChatServices {
         .snapshots();
   }
 
-  addMessage(String chatRoomId, chatMessageData) {
+  addMessage(String chatRoomId, chatMessageData, String email) {
     FirebaseFirestore.instance
         .collection("chatRoom")
         .doc(chatRoomId)
@@ -80,10 +80,20 @@ class ChatServices {
         .catchError((e) {
       print(e.toString());
     });
+
+    String unreadEmail = chatRoomId
+        .replaceAll("_", "")
+        .replaceAll(email, "")
+        .replaceAll(".com", "");
+    String unreadMsgskey = "unreadMsgs" + "." + unreadEmail;
+
+    FirebaseFirestore.instance
+        .collection('chatRoom')
+        .doc(chatRoomId)
+        .update({unreadMsgskey: FieldValue.increment(1)});
   }
 
-
-  updateReadyBy(String id, String chatRoomId) {
+  updateReadyBy(String id, String chatRoomId, String email) {
     FirebaseFirestore.instance
         .collection("chatRoom")
         .doc(chatRoomId)
@@ -94,4 +104,29 @@ class ChatServices {
     });
   }
 
+  markRead(String chatRoomId, String email) {
+    email = email.replaceAll(".com", "");
+    String key = "unreadMsgs" + "." + email;
+    FirebaseFirestore.instance
+        .collection('chatRoom')
+        .doc(chatRoomId)
+        .update({key: 0});
+  }
+
+  Future<bool> checkChatRoomExists(String chatRoomId) async {
+    bool exists;
+
+    var collection = await FirebaseFirestore.instance
+        .collection('chatRoom')
+        .doc(chatRoomId)
+        .get();
+
+    if (collection.data() == null) {
+      exists = false;
+    } else {
+      exists = true;
+    }
+
+    return exists;
+  }
 }
