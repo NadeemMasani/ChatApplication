@@ -32,7 +32,9 @@ class _MessageListState extends State<MessageList> {
     // print(widget.chatRoomId);
     if (widget.user.firstName + widget.user.lastName !=
         widget.messageSnapshot.data()['sendBy']) {
-      chatServices.updateReadyBy(widget.messageSnapshot.id, widget.chatRoomId);
+      chatServices.updateReadyBy(
+          widget.messageSnapshot.id, widget.chatRoomId, widget.user.email);
+      chatServices.markRead(widget.chatRoomId, widget.user.email);
     }
     return SizeTransition(
       sizeFactor:

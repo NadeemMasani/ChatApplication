@@ -55,6 +55,8 @@ class UserChats extends StatelessWidget {
                   .data()['chatRoomId']
                   .replaceAll("_", "")
                   .replaceAll(currEmail, "");
+              final unreadMsgCount = document.data()["unreadMsgs"]
+                  [currEmail.replaceAll('.com', '')];
               return Container(
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.black26))),
@@ -66,7 +68,27 @@ class UserChats extends StatelessWidget {
                   child: ListTile(
                       title: Text(toUser),
                       subtitle: Text(toEmail),
-                      trailing: Icon(Icons.message)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          unreadMsgCount > 0
+                              ? ClipOval(
+                                  child: Container(
+                                    color: Colors.green,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 5),
+                                    child: Text(
+                                      unreadMsgCount.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                          Icon(Icons.message),
+                        ],
+                      )),
                 ),
               );
             }).toList(),

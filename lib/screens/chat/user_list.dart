@@ -36,15 +36,15 @@ class _UserListState extends State<UserList> {
     }
 
     sendMessage(String userName, int phoneNo, String email) {
-      //create chat room id
       List<String> users = [currName, userName];
       List<int> phoneNos = [currUserPhone, phoneNo];
       List<String> emails = [currUserEmail, email];
-      List<Map<String, String>> unreadMsgs = [
-        {currUserEmail: "0"},
-        {email: "0"}
-      ];
-      // String chatRoomId = getChatRoomId(currUserPhone, phoneNo);
+
+      Map<String, int> unreadMsgs = {
+        currUserEmail.replaceAll(".com", ""): 0,
+        email.replaceAll(".com", ""): 0,
+      };
+      //create chat room id
       String chatRoomId = getChatRoomId(currUserEmail, email);
 
       Map<String, dynamic> chatRoom = {
@@ -54,14 +54,19 @@ class _UserListState extends State<UserList> {
         "emails": emails,
         "unreadMsgs": unreadMsgs,
       };
-      chatServices.addChatRoom(chatRoom, chatRoomId);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) {
-          return ChatScreen(
-              name: userName, chatRoomId: chatRoomId, user: widget.user);
-        }),
-      );
+
+      chatServices.checkChatRoomExists(chatRoomId).then((value) {
+        if (value == false) {
+          chatServices.addChatRoom(chatRoom, chatRoomId);
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return ChatScreen(
+                name: userName, chatRoomId: chatRoomId, user: widget.user);
+          }),
+        );
+      });
     }
 
     return Padding(
