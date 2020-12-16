@@ -141,7 +141,6 @@ class _UserListState extends State<UserList> {
                     } else {
                       if (name.contains(searchText.toLowerCase()) ||
                           email.contains(searchText.toLowerCase())) {
-                        print(snapshot.data.docs[index]['name']);
                         return GestureDetector(
                           onTap: () {
                             sendMessage(

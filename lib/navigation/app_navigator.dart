@@ -1,5 +1,4 @@
 import 'package:ChatApplication/model/user.dart';
-import 'package:ChatApplication/screens/chat/add_group_chat.dart';
 import 'package:flutter/material.dart';
 import '../screens/chat/user_list.dart';
 import '../screens/chat/user_chats.dart';

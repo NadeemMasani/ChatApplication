@@ -6,9 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'chat_screen.dart';
-import './user_group_chats.dart';
-
 class GroupChat extends StatefulWidget {
   final UserModel user;
   GroupChat({this.user});
@@ -28,8 +25,8 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     ChatServices chatServices = new ChatServices();
     //get data of current user from either constructor or shared prefs
-    final currUserPhone = widget.user.phoneNumber;
-    final currName = widget.user.firstName + widget.user.lastName;
+    // final currUserPhone = widget.user.phoneNumber;
+    // final currName = widget.user.firstName + widget.user.lastName;
     final currUserEmail = widget.user.email;
     TextEditingController groupChatNameController = new TextEditingController();
 
@@ -48,7 +45,6 @@ class _GroupChatState extends State<GroupChat> {
         showAlertDialog(
             context, "Maximum user in group chat allowed are 5", "Attention");
       }
-      print(userList);
     }
 
     void startGroupChat(List userEmailList, List userNameList) {
@@ -197,7 +193,6 @@ class _GroupChatState extends State<GroupChat> {
                       } else {
                         if (name.contains(searchText.toLowerCase()) ||
                             email.contains(searchText.toLowerCase())) {
-                          print(snapshot.data.docs[index]['name']);
                           return GestureDetector(
                             onTap: () {
                               addUserToList(snapshot.data.docs[index]['email'],
