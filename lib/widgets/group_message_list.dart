@@ -55,7 +55,7 @@ class _GroupMessageListState extends State<GroupMessageList> {
               widget.messageSnapshot.data()['message'],
               textAlign: TextAlign.start,
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: 16,
                   fontFamily: 'OverpassRegular',
                   fontWeight: FontWeight.w300),

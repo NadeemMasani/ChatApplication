@@ -33,16 +33,16 @@ class AppNavigator extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.message)),
-              Tab(icon: Icon(Icons.list)),
-              Tab(icon: Icon(Icons.group_add))
+              Tab(icon: Icon(Icons.group)),
+              Tab(icon: Icon(Icons.list))
             ],
           ),
         ),
         body: TabBarView(
           children: [
             UserChats(user: user),
-            UserList(user: user),
             UserGroupChats(user: user),
+            UserList(user: user),
           ],
         ),
       ),
