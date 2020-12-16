@@ -11,7 +11,6 @@ class UserGroupChats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(user.email);
     ChatServices chatServices = ChatServices();
 
     goToGroupChatScreen(String groupChatId, String groupName) {
@@ -74,7 +73,7 @@ class UserGroupChats extends StatelessWidget {
               }),
             );
           },
-          child: Icon(Icons.add),
+          child: Icon(Icons.group_add),
           backgroundColor: Colors.green,
         )),
       ),
