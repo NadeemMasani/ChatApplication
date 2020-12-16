@@ -18,6 +18,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController emailController = new TextEditingController();
   AuthMethods auth = new AuthMethods();
   bool isSuccess = false;
+  String errorMessage ="";
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +58,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 isSuccess = true;
                               });
                             } catch (e) {
-                              String errorMessage = e.toString().substring(
-                                  e.toString().indexOf(']') + 2);
-                              showAlertDialog(context, errorMessage, "Alert");
+                                setState(() {
+                                  errorMessage = e.toString().substring(
+                                      e.toString().indexOf(']') + 2);
+                                });
+
                             }
 
                             if (isSuccess) {
                               showAlertDialog(context,
                                   "Password reset email has been sent to your email Id",
                                   "Attention");
+                            }else{
+                              showAlertDialog(context, errorMessage, "Attention");
                             }
+
                           }
                         },
                         child: Container(
