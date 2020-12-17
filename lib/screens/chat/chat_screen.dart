@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ChatApplication/model/user.dart';
 import 'package:flutter/material.dart';
 import '../../network/chat_service.dart';
@@ -9,7 +11,8 @@ class ChatScreen extends StatefulWidget {
   final String name;
   final String chatRoomId;
   final UserModel user;
-  ChatScreen({this.name, this.chatRoomId, this.user});
+  final String base64Image;
+  ChatScreen({this.name, this.chatRoomId, this.user, this.base64Image});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -61,7 +64,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: widget.base64Image != null
+                      ? Image.memory(base64Decode(widget.base64Image))
+                      : Icon(Icons.account_box),),
+              backgroundColor: Colors.white,
+            ),
+            SizedBox(width: 10,),
+            Container(
+                padding: const EdgeInsets.all(8.0), child: Text(widget.name))
+          ],
+
+        ),
+
       ),
       body: Container(
         child: Column(
