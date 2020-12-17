@@ -3,10 +3,10 @@ import 'package:ChatApplication/navigation/app_navigator.dart';
 import 'package:ChatApplication/network/chat_service.dart';
 import 'package:ChatApplication/screens/authentication/forgot_password.dart';
 import 'package:ChatApplication/screens/authentication/signup_screen.dart';
-import 'package:ChatApplication/screens/shared/alerts.dart';
-import 'package:ChatApplication/screens/shared/input_decoration.dart';
-import 'package:ChatApplication/screens/shared/utils.dart';
-import 'package:ChatApplication/services/authentication.dart';
+import 'package:ChatApplication/widgets/alerts.dart';
+import 'package:ChatApplication/widgets/input_decoration.dart';
+import 'package:ChatApplication/widgets/utils.dart';
+import 'package:ChatApplication/network/authentication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

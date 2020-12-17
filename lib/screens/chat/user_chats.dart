@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ChatApplication/model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class UserChats extends StatelessWidget {
   Widget build(BuildContext context) {
     final currUser = user.firstName + user.lastName;
     final currEmail = user.email;
+    var base64Image;
 
     String getChatRoomId(String currEmail, String email) {
       if (currEmail.compareTo(email) == 1) {
@@ -29,7 +32,7 @@ class UserChats extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(name: userName, chatRoomId: chatRoomId, user: user);
+          return ChatScreen(name: userName, chatRoomId: chatRoomId, user: user, base64Image: base64Image,);
         }),
       );
     }
@@ -57,6 +60,7 @@ class UserChats extends StatelessWidget {
                   .replaceAll(currEmail, "");
               final unreadMsgCount = document.data()["unreadMsgs"]
                   [currEmail.replaceAll('.com', '')];
+
               return Container(
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.black26))),
@@ -66,6 +70,27 @@ class UserChats extends StatelessWidget {
                     goToChatScreen(toUser, toEmail);
                   },
                   child: ListTile(
+                      leading: FutureBuilder<UserModel>(
+                          future: chatServices.getUserByEmail(toEmail),
+                          builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot){
+                            if(snapshot.hasData) {
+                              base64Image = snapshot.data.base64Image;
+                              return CircleAvatar(
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: base64Image != null
+                                        ? Image.memory(base64Decode(snapshot.data.base64Image),)
+                                        : Icon(Icons.account_box)
+                                ),
+                                backgroundColor: Colors.white,
+                              );
+                            }else if(snapshot.hasError){
+                              return CircleAvatar( child : Icon(Icons.account_box));
+                            }else{
+                              return CircleAvatar(child: CircularProgressIndicator());
+                            }
+                        }
+                      ),
                       title: Text(toUser),
                       subtitle: Text(toEmail),
                       trailing: Row(

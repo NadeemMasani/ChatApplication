@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'package:ChatApplication/model/user.dart';
-import 'package:ChatApplication/screens/shared/input_decoration.dart';
+import 'package:ChatApplication/widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import './chat_screen.dart';
@@ -35,7 +36,7 @@ class _UserListState extends State<UserList> {
       }
     }
 
-    sendMessage(String userName, int phoneNo, String email) {
+    sendMessage(String base64Image, String userName, int phoneNo, String email) {
       List<String> users = [currName, userName];
       List<int> phoneNos = [currUserPhone, phoneNo];
       List<String> emails = [currUserEmail, email];
@@ -64,7 +65,7 @@ class _UserListState extends State<UserList> {
           context,
           MaterialPageRoute(builder: (context) {
             return ChatScreen(
-                name: userName, chatRoomId: chatRoomId, user: widget.user);
+                name: userName, chatRoomId: chatRoomId, user: widget.user, base64Image: base64Image,);
           }),
         );
       });
@@ -120,16 +121,26 @@ class _UserListState extends State<UserList> {
                         snapshot.data.docs[index]['name'].toLowerCase();
                     final email =
                         snapshot.data.docs[index]['email'].toLowerCase();
+                    final image = snapshot.data.docs[index]['image'];
 
                     if (searchText == "") {
                       return GestureDetector(
                         onTap: () {
                           sendMessage(
+                              snapshot.data.docs[index]['image'],
                               snapshot.data.docs[index]['name'],
                               snapshot.data.docs[index]['phone'],
                               snapshot.data.docs[index]['email']);
                         },
                         child: ListTile(
+                          leading: CircleAvatar(
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: image!= null
+                                    ? Image.memory(base64Decode(image),)
+                                    : Icon(Icons.account_box)),
+                            backgroundColor: Colors.white,
+                          ),
                           title: Text(snapshot.data.docs[index]['name']),
                           subtitle: Text(snapshot.data.docs[index]['email']),
                           trailing: snapshot.data.docs[index]['email'] !=
@@ -144,6 +155,7 @@ class _UserListState extends State<UserList> {
                         return GestureDetector(
                           onTap: () {
                             sendMessage(
+                                snapshot.data.docs[index]['image'],
                                 snapshot.data.docs[index]['name'],
                                 snapshot.data.docs[index]['phone'],
                                 snapshot.data.docs[index]['email']);

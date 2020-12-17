@@ -5,10 +5,10 @@ import 'package:ChatApplication/model/user.dart';
 import 'package:ChatApplication/navigation/app_navigator.dart';
 import 'package:ChatApplication/network/chat_service.dart';
 import 'package:ChatApplication/screens/authentication/signin_screen.dart';
-import 'package:ChatApplication/screens/shared/alerts.dart';
-import 'package:ChatApplication/screens/shared/image_display.dart';
-import 'package:ChatApplication/screens/shared/input_decoration.dart';
-import 'package:ChatApplication/services/authentication.dart';
+import 'package:ChatApplication/widgets/alerts.dart';
+import 'package:ChatApplication/widgets/image_display.dart';
+import 'package:ChatApplication/widgets/input_decoration.dart';
+import 'package:ChatApplication/network/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -104,7 +104,10 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    ///Display Uploaded Image
                     if (base64Image != null) ImageDisplay(base64: base64Image),
+
+                    ///SignUp Form
                     Form(
                         key: formKey,
                         child: Column(children: [

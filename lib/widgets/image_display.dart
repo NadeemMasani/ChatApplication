@@ -19,7 +19,7 @@ class ImageDisplay extends StatelessWidget {
               ),
               child: new Container(
                   child: Center(child: Text('No Image')),
-                  width: 100,
+                  width: 50,
                   height: 50)));
     Uint8List bytes = base64Decode(base64);
 
@@ -29,7 +29,8 @@ class ImageDisplay extends StatelessWidget {
       child: Image.memory(
         bytes,
         fit: BoxFit.fitWidth,
-        height: 70,
+        width: 10,
+        height: 10,
       ),
     ));
   }

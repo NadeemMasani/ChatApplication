@@ -17,7 +17,7 @@ class ChatServices {
         .doc(chatRoomId)
         .set(chatRoom)
         .catchError((e) {
-      print(e);
+          return null;
     });
   }
 
@@ -26,7 +26,7 @@ class ChatServices {
         .collection("chatRoom")
         .add(chatRoom)
         .catchError((e) {
-      print(e.toString());
+      return null;
     });
   }
 
@@ -68,6 +68,7 @@ class ChatServices {
     user.lastName = "";
     user.phoneNumber = snapshot.docs.first.data()['phone'];
     user.email = snapshot.docs.first.data()['email'];
+    user.base64Image = snapshot.docs.first.data()['image'];
 
     return user;
   }
@@ -87,7 +88,7 @@ class ChatServices {
         .collection("chats")
         .add(chatMessageData)
         .catchError((e) {
-      print(e.toString());
+      return null;
     });
 
     String unreadEmail = chatRoomId

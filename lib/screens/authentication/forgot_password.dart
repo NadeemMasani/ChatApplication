@@ -1,7 +1,7 @@
 import 'package:ChatApplication/screens/authentication/signin_screen.dart';
-import 'package:ChatApplication/screens/shared/alerts.dart';
-import 'package:ChatApplication/screens/shared/input_decoration.dart';
-import 'package:ChatApplication/services/authentication.dart';
+import 'package:ChatApplication/widgets/alerts.dart';
+import 'package:ChatApplication/widgets/input_decoration.dart';
+import 'package:ChatApplication/network/authentication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

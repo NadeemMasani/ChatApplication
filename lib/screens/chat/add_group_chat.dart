@@ -1,7 +1,7 @@
 import 'package:ChatApplication/model/user.dart';
 import 'package:ChatApplication/network/chat_service.dart';
-import 'package:ChatApplication/screens/shared/alerts.dart';
-import 'package:ChatApplication/screens/shared/input_decoration.dart';
+import 'package:ChatApplication/widgets/alerts.dart';
+import 'package:ChatApplication/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,6 @@ class _GroupChatState extends State<GroupChat> {
   @override
   Widget build(BuildContext context) {
     ChatServices chatServices = new ChatServices();
-    //get data of current user from either constructor or shared prefs
-    // final currUserPhone = widget.user.phoneNumber;
-    // final currName = widget.user.firstName + widget.user.lastName;
     final currUserEmail = widget.user.email;
     TextEditingController groupChatNameController = new TextEditingController();
 
@@ -64,7 +61,6 @@ class _GroupChatState extends State<GroupChat> {
 
       chatServices.addGroupChat(chatRoom);
 
-      // showAlertDialog(context, "Group CHat strted", "Attention");
       Navigator.of(context).pop();
     }
 
