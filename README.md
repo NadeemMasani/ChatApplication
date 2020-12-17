@@ -1,6 +1,6 @@
-# ChatApplication
-
-A new Flutter project.
+# Team Members
+Nadeem Masani :- 824660441
+Tejas Patil   :- 
 
 ## Getting Started
 
