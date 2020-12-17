@@ -149,7 +149,6 @@ class _GroupChatState extends State<GroupChat> {
                 ),
               ),
             StreamBuilder<QuerySnapshot>(
-              // stream: chatServices.getUsers() ,
               stream: chatServices.getUserByName(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {

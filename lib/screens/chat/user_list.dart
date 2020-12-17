@@ -36,14 +36,15 @@ class _UserListState extends State<UserList> {
       }
     }
 
-    sendMessage(String base64Image, String userName, int phoneNo, String email) {
+    sendMessage(
+        String base64Image, String userName, int phoneNo, String email) {
       List<String> users = [currName, userName];
       List<int> phoneNos = [currUserPhone, phoneNo];
       List<String> emails = [currUserEmail, email];
 
       Map<String, int> unreadMsgs = {
-        currUserEmail.replaceAll(".com", ""): 0,
-        email.replaceAll(".com", ""): 0,
+        currUserEmail.replaceAll(".", "").replaceAll("com", ""): 0,
+        email.replaceAll(".", "").replaceAll("com", ""): 0,
       };
       //create chat room id
       String chatRoomId = getChatRoomId(currUserEmail, email);
@@ -65,7 +66,11 @@ class _UserListState extends State<UserList> {
           context,
           MaterialPageRoute(builder: (context) {
             return ChatScreen(
-                name: userName, chatRoomId: chatRoomId, user: widget.user, base64Image: base64Image,);
+              name: userName,
+              chatRoomId: chatRoomId,
+              user: widget.user,
+              base64Image: base64Image,
+            );
           }),
         );
       });
@@ -99,7 +104,6 @@ class _UserListState extends State<UserList> {
             ],
           ),
           StreamBuilder<QuerySnapshot>(
-            // stream: chatServices.getUsers() ,
             stream: chatServices.getUserByName(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -126,18 +130,23 @@ class _UserListState extends State<UserList> {
                     if (searchText == "") {
                       return GestureDetector(
                         onTap: () {
-                          sendMessage(
-                              snapshot.data.docs[index]['image'],
-                              snapshot.data.docs[index]['name'],
-                              snapshot.data.docs[index]['phone'],
-                              snapshot.data.docs[index]['email']);
+                          if (snapshot.data.docs[index]['email'] !=
+                              currUserEmail) {
+                            sendMessage(
+                                snapshot.data.docs[index]['image'],
+                                snapshot.data.docs[index]['name'],
+                                snapshot.data.docs[index]['phone'],
+                                snapshot.data.docs[index]['email']);
+                          }
                         },
                         child: ListTile(
                           leading: CircleAvatar(
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: image!= null
-                                    ? Image.memory(base64Decode(image),)
+                                child: image != null
+                                    ? Image.memory(
+                                        base64Decode(image),
+                                      )
                                     : Icon(Icons.account_box)),
                             backgroundColor: Colors.white,
                           ),
@@ -146,7 +155,7 @@ class _UserListState extends State<UserList> {
                           trailing: snapshot.data.docs[index]['email'] !=
                                   currUserEmail
                               ? Icon(Icons.message)
-                              : Text("me"),
+                              : Text(''),
                         ),
                       );
                     } else {
@@ -154,19 +163,32 @@ class _UserListState extends State<UserList> {
                           email.contains(searchText.toLowerCase())) {
                         return GestureDetector(
                           onTap: () {
-                            sendMessage(
-                                snapshot.data.docs[index]['image'],
-                                snapshot.data.docs[index]['name'],
-                                snapshot.data.docs[index]['phone'],
-                                snapshot.data.docs[index]['email']);
+                            if (snapshot.data.docs[index]['email'] !=
+                                currUserEmail) {
+                              sendMessage(
+                                  snapshot.data.docs[index]['image'],
+                                  snapshot.data.docs[index]['name'],
+                                  snapshot.data.docs[index]['phone'],
+                                  snapshot.data.docs[index]['email']);
+                            }
                           },
                           child: ListTile(
+                            leading: CircleAvatar(
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: image != null
+                                      ? Image.memory(
+                                          base64Decode(image),
+                                        )
+                                      : Icon(Icons.account_box)),
+                              backgroundColor: Colors.white,
+                            ),
                             title: Text(snapshot.data.docs[index]['name']),
                             subtitle: Text(snapshot.data.docs[index]['email']),
                             trailing: snapshot.data.docs[index]['email'] !=
                                     currUserEmail
                                 ? Icon(Icons.message)
-                                : Text("me"),
+                                : Text(''),
                           ),
                         );
                       } else

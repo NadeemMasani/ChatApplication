@@ -19,7 +19,7 @@ class AppNavigator extends StatelessWidget {
           actions: [
             GestureDetector(
               onTap: () {
-                //FireBase Logout functionality
+                //Logout functionality
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) {
                   return MyApp();

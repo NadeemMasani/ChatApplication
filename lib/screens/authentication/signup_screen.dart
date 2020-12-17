@@ -140,9 +140,12 @@ class _SignUpState extends State<SignUp> {
                                   labelText: 'Email'),
                               controller: emailController,
                               validator: (val) {
-                                return val.isEmpty || val.trim().isEmpty
-                                    ? "Please enter some text"
-                                    : null;
+                                if (val.isEmpty || val.trim().isEmpty) {
+                                  return "Please enter some text";
+                                } else if (val.contains("_")) {
+                                  return "_ is not allowed in email id";
+                                } else
+                                  return null;
                               }),
                           SizedBox(
                             height: 8,

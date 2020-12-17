@@ -28,7 +28,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           "sendBy": currUser,
           "message": messageEditingController.text,
           'time': DateTime.now().millisecondsSinceEpoch,
-          // "readBy": false,
         };
         chatServices.addGroupChatMessage(widget.groupChatId, chatMessageMap);
         setState(() {

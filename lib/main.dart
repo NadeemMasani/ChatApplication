@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ChatWithFriends',
+      title: 'Chit-Chat',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -37,17 +37,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: RaisedButton(
-          onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) {
-              return AppNavigator();
-            }));
-          },
-          child: Text('Go to chat Screen', style: TextStyle(fontSize: 20)),
-        ));
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: RaisedButton(
+        onPressed: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return AppNavigator();
+          }));
+        },
+        child: Text('Go to chat Screen', style: TextStyle(fontSize: 20)),
+      ),
+    );
   }
 }
