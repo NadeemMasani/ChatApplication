@@ -19,7 +19,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  //to be replaced by logged in user either shared prefs or constructor....
   ChatServices chatServices = ChatServices();
 
   @override
@@ -45,8 +44,8 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
 
-    addMessage() {
-      if (messageEditingController.text.isNotEmpty) {
+    addMessage(String text) {
+      if (text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
           "sendBy": currUser,
           "message": messageEditingController.text,
@@ -69,19 +68,20 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             CircleAvatar(
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: widget.base64Image != null
-                      ? Image.memory(base64Decode(widget.base64Image))
-                      : Icon(Icons.account_box),),
+                borderRadius: BorderRadius.circular(8.0),
+                child: widget.base64Image != null
+                    ? Image.memory(base64Decode(widget.base64Image))
+                    : Icon(Icons.account_box),
+              ),
               backgroundColor: Colors.white,
             ),
-            SizedBox(width: 10,),
+            SizedBox(
+              width: 10,
+            ),
             Container(
                 padding: const EdgeInsets.all(8.0), child: Text(widget.name))
           ],
-
         ),
-
       ),
       body: Container(
         child: Column(
@@ -105,11 +105,17 @@ class _ChatScreenState extends State<ChatScreen> {
                             fontSize: 16,
                           ),
                         ),
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            addMessage(value);
+                          }
+                        },
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        addMessage();
+                        addMessage(messageEditingController.text);
                       },
                       child: Icon(Icons.send),
                     ),

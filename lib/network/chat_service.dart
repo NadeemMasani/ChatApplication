@@ -11,16 +11,18 @@ class ChatServices {
     });
   }
 
+  //create a new chatroom between 2 people
   Future<void> addChatRoom(chatRoom, chatRoomId) async {
     return await FirebaseFirestore.instance
         .collection("chatRoom")
         .doc(chatRoomId)
         .set(chatRoom)
         .catchError((e) {
-          return null;
+      return null;
     });
   }
 
+//create a new group chat
   Future<void> addGroupChat(chatRoom) async {
     return FirebaseFirestore.instance
         .collection("chatRoom")
@@ -30,6 +32,7 @@ class ChatServices {
     });
   }
 
+//get all chat messages for the given chat room id
   getChats(String chatRoomId) {
     return FirebaseFirestore.instance
         .collection("chatRoom")
@@ -38,6 +41,7 @@ class ChatServices {
         .orderBy("time", descending: true);
   }
 
+  //get group chat messages for the id
   getGroupChatsMessage(String groupChatGroupChatId) {
     return FirebaseFirestore.instance
         .collection("chatRoom")
@@ -73,6 +77,7 @@ class ChatServices {
     return user;
   }
 
+//get all chat rooms the user is involved in
   getChatRooms(String email) {
     return FirebaseFirestore.instance
         .collection('chatRoom')
@@ -81,6 +86,7 @@ class ChatServices {
         .snapshots();
   }
 
+//send a new messgae in the chat room
   addMessage(String chatRoomId, chatMessageData, String email) {
     FirebaseFirestore.instance
         .collection("chatRoom")
@@ -94,7 +100,8 @@ class ChatServices {
     String unreadEmail = chatRoomId
         .replaceAll("_", "")
         .replaceAll(email, "")
-        .replaceAll(".com", "");
+        .replaceAll(".", "")
+        .replaceAll("com", "");
     String unreadMsgskey = "unreadMsgs" + "." + unreadEmail;
 
     FirebaseFirestore.instance
@@ -103,6 +110,7 @@ class ChatServices {
         .update({unreadMsgskey: FieldValue.increment(1)});
   }
 
+//add new message in the groupchat
   addGroupChatMessage(String groupChatId, messageMap) {
     FirebaseFirestore.instance
         .collection("chatRoom")
@@ -111,6 +119,7 @@ class ChatServices {
         .add(messageMap);
   }
 
+//make the message as read by the user
   updateReadyBy(String id, String chatRoomId, String email) {
     FirebaseFirestore.instance
         .collection("chatRoom")
@@ -122,8 +131,9 @@ class ChatServices {
     });
   }
 
+  //set the count for unread messages
   markRead(String chatRoomId, String email) {
-    email = email.replaceAll(".com", "");
+    email = email.replaceAll(".", "").replaceAll("com", "");
     String key = "unreadMsgs" + "." + email;
     FirebaseFirestore.instance
         .collection('chatRoom')
@@ -148,6 +158,7 @@ class ChatServices {
     return exists;
   }
 
+//get all group chats for the user
   getGroupChats(String email) {
     return FirebaseFirestore.instance
         .collection("chatRoom")

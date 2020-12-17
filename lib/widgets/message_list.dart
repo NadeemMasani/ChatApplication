@@ -25,11 +25,6 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.messageSnapshot.data()['message']);
-    // print(widget.user.firstName);
-    // print(widget.user.lastName);
-    // print(widget.messageSnapshot.data());
-    // print(widget.chatRoomId);
     if (widget.user.firstName + widget.user.lastName !=
         widget.messageSnapshot.data()['sendBy']) {
       chatServices.updateReadyBy(

@@ -32,7 +32,12 @@ class UserChats extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return ChatScreen(name: userName, chatRoomId: chatRoomId, user: user, base64Image: base64Image,);
+          return ChatScreen(
+            name: userName,
+            chatRoomId: chatRoomId,
+            user: user,
+            base64Image: base64Image,
+          );
         }),
       );
     }
@@ -59,7 +64,7 @@ class UserChats extends StatelessWidget {
                   .replaceAll("_", "")
                   .replaceAll(currEmail, "");
               final unreadMsgCount = document.data()["unreadMsgs"]
-                  [currEmail.replaceAll('.com', '')];
+                  [currEmail.replaceAll(".", "").replaceAll('com', '')];
 
               return Container(
                 decoration: BoxDecoration(
@@ -72,32 +77,36 @@ class UserChats extends StatelessWidget {
                   child: ListTile(
                       leading: FutureBuilder<UserModel>(
                           future: chatServices.getUserByEmail(toEmail),
-                          builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot){
-                            if(snapshot.hasData) {
+                          builder: (BuildContext context,
+                              AsyncSnapshot<UserModel> snapshot) {
+                            if (snapshot.hasData) {
                               base64Image = snapshot.data.base64Image;
                               return CircleAvatar(
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
                                     child: base64Image != null
-                                        ? Image.memory(base64Decode(snapshot.data.base64Image),)
-                                        : Icon(Icons.account_box)
-                                ),
+                                        ? Image.memory(
+                                            base64Decode(
+                                                snapshot.data.base64Image),
+                                          )
+                                        : Icon(Icons.account_box)),
                                 backgroundColor: Colors.white,
                               );
-                            }else if(snapshot.hasError){
-                              return CircleAvatar( child : Icon(Icons.account_box));
-                            }else{
-                              return CircleAvatar(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return CircleAvatar(
+                                  child: Icon(Icons.account_box));
+                            } else {
+                              return CircleAvatar(
+                                  child: CircularProgressIndicator());
                             }
-                        }
-                      ),
+                          }),
                       title: Text(toUser),
                       subtitle: Text(toEmail),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          unreadMsgCount > 0
+                          unreadMsgCount != null && unreadMsgCount > 0
                               ? ClipOval(
                                   child: Container(
                                     color: Colors.green,
